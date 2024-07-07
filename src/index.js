@@ -1,7 +1,6 @@
 const { Client, LocalAuth, Poll } = require("whatsapp-web.js");
 const qrcode = require("qrcode-terminal");
-const Chat = require("./handler/chat.js");
-const Guild = require("./handler/chat.js");
+const Guild = require("./handler/guild.js");
 
 // Make sure to update the wwebVersion if needed
 const wwebVersion = "2.2412.54";
@@ -38,11 +37,11 @@ client.on("message", async (msg) => {
   const guild = new Guild(msg, client);
   await guild.initialize();
   if (msg.body === "!ping") {
-    msg.reply("pong");
+    await msg.reply("pong");
   }
   if (msg.body.startsWith("!poll create")) {
     try {
-      client
+      await client
         .sendMessage(msg.from, createPoll(msg.body))
         .catch((err) => console.log(err));
     } catch (error) {
@@ -51,11 +50,29 @@ client.on("message", async (msg) => {
   }
 
   if (msg.body === "!chat id") {
-    msg.reply(guild.chat.id.user)
+    await msg.reply(guild.chat.id.user)
   }
 
   if (msg.body.startsWith("!chat setIcon")) {
-    guild.setGrpIcon().catch(console.log);
+    guild.setGrpIcon()
+      .then(() => {
+        msg.reply('Group image updated successfully!');
+      })
+      .catch(err => {
+        console.log(err)
+        msg.reply(`${err}`)
+      })
+  }
+
+  if (msg.body === "!chat delIcon") {
+    guild.deleteGrpIcon()
+      .then(async () => {
+        msg.reply('Group image deleted successfully')
+      })
+      .catch(err => {
+        console.log(err);
+        msg.reply(`${err}`);
+      })
   }
 });
 

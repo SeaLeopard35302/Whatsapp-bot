@@ -21,9 +21,7 @@ module.exports = class Guild {
   }
 
   async getChat() {
-    if (!this.chat) {
-      await this.initialize();
-    }
+    await this.initialize();
     return this.chat;
   }
 
@@ -38,26 +36,40 @@ module.exports = class Guild {
   }
 
   async setGrpIcon() {
+    if (!await this.isGroup()) {
+      throw new Error('This guild is not a group');
+    }
     try {
-      if (!await this.isGroup()) {
-        throw new Error('This guild is not a group');
-      }
-
+      let media;
       if (this.#msg.type === 'image') {
-        const media = await this.#msg.downloadMedia();
-        await this.chat.setPicture(media);
-        console.log('Group image updated successfully!');
+        media = await this.#msg.downloadMedia();
       } else {
         const urlMatch = this.#msg.body.match(/!chat setIcon\s+(https?:\/\/\S+)/);
         if (!urlMatch || !urlMatch[1]) {
           throw new Error('URL not found');
         }
         const imageUrl = urlMatch[1];
-        const media = await MessageMedia.fromUrl(imageUrl)
-        await this.chat.setPicture(media)
+        media = await MessageMedia.fromUrl(imageUrl);
       }
+      await this.chat.setPicture(media);
+      return true;
+
     } catch (error) {
-      console.error('Error updating group image:', error);
+      console.log(`Error updating group image:`, error);
+      throw error;
+    }
+  }
+
+  async deleteGrpIcon() {
+    if (!await this.isGroup()) {
+      throw new Error('This guild is not a group');
+    }
+    try {
+      await this.chat.deletePicture()
+      return true;
+    } catch (error) {
+      console.log(`Error occureed in deleting grp icon`, error)
+      throw error
     }
   }
 };
