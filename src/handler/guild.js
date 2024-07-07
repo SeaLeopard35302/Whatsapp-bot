@@ -1,4 +1,3 @@
-const axios = require("axios")
 const { MessageMedia } = require("whatsapp-web.js")
 
 module.exports = class Guild {
