@@ -45,19 +45,14 @@ module.exports = class Guild {
 
       if (this.#msg.type === 'image') {
         const media = await this.#msg.downloadMedia();
-        console.log(media);
-        const buffer = Buffer.from(media.data, 'base64');
         await this.chat.setPicture(media);
         console.log('Group image updated successfully!');
       } else {
-        let imageUrl;
         const urlMatch = this.#msg.body.match(/!chat setIcon\s+(https?:\/\/\S+)/);
-        if (urlMatch && urlMatch[1]) {
-          imageUrl = urlMatch[1];
-        } else {
-          throw new Error('Invalid command format or URL not found');
+        if (!urlMatch || !urlMatch[1]) {
+          throw new Error('URL not found');
         }
-
+        const imageUrl = urlMatch[1];
         const media = await MessageMedia.fromUrl(imageUrl)
         console.log(media);
         await this.chat.setPicture(media)
