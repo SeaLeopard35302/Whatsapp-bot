@@ -54,7 +54,6 @@ module.exports = class Guild {
         }
         const imageUrl = urlMatch[1];
         const media = await MessageMedia.fromUrl(imageUrl)
-        console.log(media);
         await this.chat.setPicture(media)
       }
     } catch (error) {

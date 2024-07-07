@@ -55,7 +55,6 @@ client.on("message", async (msg) => {
   }
 
   if (msg.body.startsWith("!chat setIcon")) {
-    // console.log(msg, guild.chat);
     guild.setGrpIcon().catch(console.log);
   }
 });
