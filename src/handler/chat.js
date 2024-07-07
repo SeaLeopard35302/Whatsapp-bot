@@ -61,15 +61,9 @@ module.exports = class Guild {
         const media = await MessageMedia.fromUrl(imageUrl)
         console.log(media);
         await this.chat.setPicture(media)
-        // const image = await axios.get(imageUrl)
-        // const base64Image = Buffer.from(image.data, 'binary').toString('base64');
-        // console.log(image);
-        // await this.#client.setProfilePicture(base64Image).catch(console.log)
-        // console.log('Group image updated successfully!');
       }
     } catch (error) {
       console.error('Error updating group image:', error);
-      throw error; // Rethrow the error for higher level handling
     }
   }
 };
